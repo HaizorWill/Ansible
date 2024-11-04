@@ -1,0 +1,62 @@
+---
+# If OS family is redhat then
+- name: install or update python
+  yum:
+    name: python
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: install or update vim
+  yum:
+    name: vim
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: remove nano
+  yum:
+    name: nano
+    state: absent
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: update sshd
+  yum:
+    name: openssh-server
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: configure sshd
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  notify: restart sshd
+
+# If OS family is Debian then
+- name: install or update python
+  apt:
+    name: python
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: install or update vim
+  apt:
+    name: vim
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: remove nano
+  apt:
+    name: nano
+    state: absent
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: update sshd
+  apt:
+    name: openssh-server
+    state: latest
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: configure sshd
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  notify: restart sshd

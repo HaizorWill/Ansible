@@ -1,0 +1,7 @@
+---
+- name: restart sshd
+  systemd:
+    name: sshd
+    enabled: yes
+    state: restarted
+  

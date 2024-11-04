@@ -1,0 +1,10 @@
+---
+- name: update existing operating systems
+  hosts: all
+  become: true
+  become_method: sudo
+  roles:
+    - debian-update
+      when: ansible_os_family == "Debian"
+    - redhat-update
+      when: ansible_os_family == "RedHat"

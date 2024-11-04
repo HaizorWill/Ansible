@@ -1,0 +1,38 @@
+---
+- name: check current OS version
+  command: uname -mrs
+  register: system_info
+- name: display kernel version
+  debug:
+    var: system_info.stdout_lines
+
+- name: make sure yum-utils is installed
+  yum:
+    name: yum-utils
+    state: present
+
+- name: update and upgrade redhat systems
+  yum:
+    update_cache: yes
+    upgrade: dist
+
+- name: check if reboot is required
+  shell: sleep 10 && needs-restarting -r
+  register: needs_restarting
+
+- name: restart the system
+  reboot:
+    msg: "System will reboot to apply changes"
+  when: needs_restarting.rc != 0
+
+- name: wait for system to reboot
+  wait_for_connection:
+    delay: 60
+    timeout: 300
+
+- name: verify new update
+  command: uname -mrs
+  register: system_info
+- name: display kernel version
+  debug:
+    var: system_info.stdout_lines
