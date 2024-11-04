@@ -1,5 +1,17 @@
 ---
-# If OS family is redhat then
+# If OS family is RedHat then
+- name: install or update yum utils
+  yum:
+    name: yum-utils
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
+- name: install or update EPEL repository
+  yum:
+    name: epel-release
+    state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+
 - name: install or update python
   yum:
     name: python
@@ -23,12 +35,6 @@
     name: openssh-server
     state: latest
   when: ansible_facts['os_family'] == 'RedHat'
-
-- name: configure sshd
-  template:
-    src: sshd_config.j2
-    dest: /etc/ssh/sshd_config
-  notify: restart sshd
 
 # If OS family is Debian then
 - name: install or update python
@@ -54,6 +60,8 @@
     name: openssh-server
     state: latest
   when: ansible_facts['os_family'] == 'Debian'
+
+# General tasks for any OS family
 
 - name: configure sshd
   template:
