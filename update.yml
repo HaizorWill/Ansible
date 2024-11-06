@@ -5,6 +5,6 @@
   become_method: sudo
   roles:
     - debian-update
-      when: ansible_os_family == "Debian"
+      when: ansible_facts['os_family'] == 'Debian'
     - redhat-update
-      when: ansible_os_family == "RedHat"
+      when: ansible_facts['os_family'] == 'RedHat'
