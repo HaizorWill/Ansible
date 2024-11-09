@@ -1,12 +1,44 @@
 ---
 - name: setup new machine
+  vars_prompt:
+    - name: install_baseline
+      prompt: "Do you want to perform basic system setup? (yes/no)"
+      default: "no"
+      private: "no"
+
+    - name: run_updates
+      prompt: "Do you want to run system updates? (yes/no)"
+      default: "no"
+      private: "no"
+
+    - name: install_docker
+      prompt: "Do you want to install Docker? (yes/no)"
+      default: "no"
+      private: "no"
+
+    - name: install_git
+      prompt: "Do you want to install Git? (yes/no)"
+      default: "no"
+      private: "no"
+
+    - name: install_zabbix_agent
+      prompt: "Do you want to install Zabbix agent? (yes/no)"
+      default: "no"
+      private: "no"
+      
   hosts: all
   become: true
   become_method: sudo
-  remote_user: controller
+  remote_user: control
   roles:
-  - baseline
-  - docker
-  - git
-  - update
-  - zabbix-agent
+    - role: baseline
+      when: install_baseline == "yes"
+    - role: docker
+      when: install_docker == "yes"
+    - role: git
+      when: install_git == "yes"
+    - role: update
+      when: run_updates == "yes"
+    - role: zabbix-agent
+      when: install_zabbix_agent == "yes"
+

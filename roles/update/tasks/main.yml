@@ -1,29 +1,58 @@
 ---
+# General tasks for any OS family
+
 - name: check current OS version
   command: uname -mrs
   register: system_info
+
 - name: display kernel version
   debug:
     var: system_info.stdout_lines
+
+# If OS family is RedHat then
 
 - name: make sure yum-utils is installed
   yum:
     name: yum-utils
     state: present
+  when:  ansible_facts['os_family'] == 'RedHat'
 
 - name: update and upgrade redhat systems
   yum:
     update_cache: yes
     upgrade: dist
+  when:  ansible_facts['os_family'] == 'RedHat'
 
 - name: check if reboot is required
   shell: sleep 10 && needs-restarting -r
   register: needs_restarting
+  when:  ansible_facts['os_family'] == 'RedHat'
 
 - name: restart the system
   reboot:
     msg: "System will reboot to apply changes"
-  when: needs_restarting.rc != 0
+  when: 
+    - needs_restarting.rc != 0
+    - ansible_facts['os_family'] == 'RedHat'
+
+# If OS family is Debian then
+
+- name: update and upgrade debian systems
+  apt:
+    update_cache: yes
+    upgrade: dist
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: reboot if kernel/libs require to
+  shell: sleep 10 && /sbin/shutdown -r now 'Rebooting to update kernel'
+  args:
+    removes: /var/run/reboot-required
+  async: 300
+  poll: 0
+  ignore_errors: true
+  when: ansible_facts['os_family'] == 'Debian'
+
+# General tasks for any OS family
 
 - name: wait for system to reboot
   wait_for_connection:
