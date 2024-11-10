@@ -1,4 +1,48 @@
 ---
+- name: local ssh keys setup
+  hosts: localhost
+  vars_prompt:
+    - name: ssh_setup
+      prompt: "Do you want to setup passwordless ssh connections? (yes/no)"
+      default: "no"
+      private: "no"
+  pre-task:
+    - pause:
+        prompt: "Which key type you want to use? (rsa, dsa, ecdsa, ed25519)"
+      register: keytype
+      when: ssh_setup == "yes"
+    - pause:
+        prompt: "What you want to name your ssh key file?"
+      register: ssh_key_filename
+      when: ssh_setup == "yes"
+    - set_fact:
+        ssh_setup: "{{ssh_setup}}"
+        ssh_key_filename: "{{ssh_key_filename}}"
+    # - name: keytype
+    #   prompt: "Which key type you want to use? (rsa, dsa, ecdsa, ed25519)"
+    #   default: rsa
+    #   private: no
+    # - name: ssh_key_filename
+    #   prompt: "What you want to name your ssh key file?"
+    #   default: "id_rsa"
+    #   private: no
+  roles:
+    - role: ssh_key
+  tasks:
+    - name: save facts
+
+
+- name: setup passwordless SSH
+  hosts: all
+  vars:
+    ssh_key_filename: "{{hostvars['localhost']['ssh_key_filename']}}"
+  tasks:
+    - name: upload public key
+      authorized_key:
+        user: "{{ansible_user}}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/{{ssh_key_filename}}.pub') }}"
+
 - name: setup new machine
   vars_prompt:
     - name: install_baseline
@@ -25,7 +69,6 @@
       prompt: "Do you want to install Zabbix agent? (yes/no)"
       default: "no"
       private: "no"
-      
   hosts: all
   become: true
   become_method: sudo
@@ -41,4 +84,3 @@
       when: run_updates == "yes"
     - role: zabbix-agent
       when: install_zabbix_agent == "yes"
-

@@ -14,7 +14,7 @@
 
 - name: install or update python
   yum:
-    name: python
+    name: python3
     state: latest
   when: ansible_facts['os_family'] == 'RedHat'
 
@@ -51,7 +51,7 @@
 # If OS family is Debian then
 - name: install or update python
   apt:
-    name: python
+    name: python3
     state: latest
   when: ansible_facts['os_family'] == 'Debian'
 
@@ -78,7 +78,6 @@
     name: htop
     state: latest
   when: ansible_facts['os_family'] == 'Debian'
-
 
 - name: update sshd
   apt:

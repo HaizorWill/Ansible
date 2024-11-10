@@ -20,7 +20,8 @@
 - name: update and upgrade redhat systems
   yum:
     update_cache: yes
-    upgrade: dist
+    autoremove: yes
+  register: yum_workload
   when:  ansible_facts['os_family'] == 'RedHat'
 
 - name: check if reboot is required
@@ -31,9 +32,9 @@
 - name: restart the system
   reboot:
     msg: "System will reboot to apply changes"
-  when: 
-    - needs_restarting.rc != 0
+  when:
     - ansible_facts['os_family'] == 'RedHat'
+    - needs_restarting.rc != 0
 
 # If OS family is Debian then
 
@@ -41,6 +42,8 @@
   apt:
     update_cache: yes
     upgrade: dist
+    autoremove: yes
+    autoclean: yes
   when: ansible_facts['os_family'] == 'Debian'
 
 - name: reboot if kernel/libs require to
