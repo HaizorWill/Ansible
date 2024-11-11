@@ -28,9 +28,6 @@
     #   private: no
   roles:
     - role: ssh_key
-  tasks:
-    - name: save facts
-
 
 - name: setup passwordless SSH
   hosts: all
