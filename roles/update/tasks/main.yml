@@ -26,15 +26,13 @@
 
 - name: check if reboot is required
   shell: sleep 10 && needs-restarting -r
-  register: needs_restarting
+  register: needs_restarting_rh
   when:  ansible_facts['os_family'] == 'RedHat'
 
 - name: restart the system
   reboot:
     msg: "System will reboot to apply changes"
-  when:
-    - ansible_facts['os_family'] == 'RedHat'
-    - needs_restarting.rc != 0
+  when: ansible_facts['os_family'] == 'RedHat' and  needs_restarting_rh.rc != 0
 
 # If OS family is Debian then
 
@@ -44,6 +42,12 @@
     upgrade: dist
     autoremove: yes
     autoclean: yes
+  when: ansible_facts['os_family'] == 'Debian'
+
+- name: register needs restarting deb variable
+  stat:
+    path: /var/run/reboot-required
+  register: needs_restarting_deb
   when: ansible_facts['os_family'] == 'Debian'
 
 - name: reboot if kernel/libs require to
@@ -61,6 +65,7 @@
   wait_for_connection:
     delay: 60
     timeout: 300
+  when: needs_restarting_rh.rc is defined and needs_restarting_rh.rc != 0 or needs_restarting_deb.stat.exists is defined and needs_restarting_deb.stat.exists != false
 
 - name: verify new update
   command: uname -mrs

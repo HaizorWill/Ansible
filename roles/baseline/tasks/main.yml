@@ -1,88 +1,48 @@
 ---
 # If OS family is RedHat then
-- name: install or update yum utils
+- name: '[rhel] install or update basic packages'
   yum:
-    name: yum-utils
+    name: "{{item}}"
     state: latest
+  loop:
+    - yum-utils
+    - epel-release
+    - python3
+    - vim
+    - curl
+    - htop
+    - wget
+    - openssh-server
   when: ansible_facts['os_family'] == 'RedHat'
 
-- name: install or update EPEL repository
+- name: remove unnecessary packages
   yum:
-    name: epel-release
-    state: latest
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: install or update python
-  yum:
-    name: python3
-    state: latest
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: install or update vim
-  yum:
-    name: vim
-    state: latest
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: remove nano
-  yum:
-    name: nano
+    name: "{{item}}"
     state: absent
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: install or update curl
-  yum:
-    name: curl
-    state: latest
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: install or update htop
-  yum:
-    name: htop
-    state: latest
-  when: ansible_facts['os_family'] == 'RedHat'
-
-- name: update sshd
-  yum:
-    name: openssh-server
-    state: latest
+  loop:
+    - nano
   when: ansible_facts['os_family'] == 'RedHat'
 
 # If OS family is Debian then
-- name: install or update python
+- name: '[deb] install or update basic packages'
   apt:
-    name: python3
+    name: "{{item}}"
     state: latest
+  loop:
+    - python3
+    - vim
+    - curl
+    - htop
+    - wget
+    - openssh-server
   when: ansible_facts['os_family'] == 'Debian'
 
-- name: install or update vim
+- name: remove unnecessary packages
   apt:
-    name: vim
-    state: latest
-  when: ansible_facts['os_family'] == 'Debian'
-
-- name: remove nano
-  apt:
-    name: nano
+    name: "{{item}}"
     state: absent
-  when: ansible_facts['os_family'] == 'Debian'
-
-- name: install or update curl
-  apt:
-    name: curl
-    state: latest
-  when: ansible_facts['os_family'] == 'Debian'
-
-- name: install or update htop
-  apt:
-    name: htop
-    state: latest
-  when: ansible_facts['os_family'] == 'Debian'
-
-- name: update sshd
-  apt:
-    name: openssh-server
-    state: latest
+  loop:
+    - nano
   when: ansible_facts['os_family'] == 'Debian'
 
 # General tasks for any OS family

@@ -1,14 +1,4 @@
 ---
-# - pause:
-#     prompt: "Which key type you want to use? (rsa, dsa, ecdsa, ed25519)"
-#     echo: yes
-#     default: rsa
-
-# - pause:
-#     prompt: "What you want to name your ssh key file?"
-#     echo: yes
-#     default: id_rsa
-    
 - name: check that the ssh local directory exists
   stat:
     path: "~/.ssh"
@@ -23,11 +13,11 @@
 
 - name: check that the key exists
   stat:
-    path: "~/.ssh/{{ssh_key_filename}}"
+    path: "~/.ssh/{{hostvars['localhost']['ssh_key_filename']}}"
   register: ssh_key_file
   with_items:
-    - "{{ssh_key_filename}}"
-    - "{{ssh_key_filename}}.pub"
+    - "{{hostvars['localhost']['ssh_key_filename']}}"
+    - "{{hostvars['localhost']['ssh_key_filename']}}.pub"
 
 - name: generate keys if don't exist
   shell: "ssh-keygen -t {{keytype}} -f ~/.ssh/{{ssh_key_filename}} -C ''"
