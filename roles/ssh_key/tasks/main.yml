@@ -22,3 +22,11 @@
 - name: generate keys if don't exist
   shell: "ssh-keygen -t {{keytype}} -f ~/.ssh/{{ssh_key_filename}} -C ''"
   when: not ssh_key_file.results[0].stat.exists and not ssh_key_file.results[1].stat.exists
+
+- name: add the ssh key to the ~/.ssh/config file
+  lineinfile:
+    path: ~/.ssh/config
+    line: "IdentityFile ~/.ssh/{{ssh_key_filename}}"
+    state: present
+    backup: yes
+  register: ssh_config_file_addition
