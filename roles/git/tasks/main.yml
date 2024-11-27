@@ -1,0 +1,12 @@
+# If OS family is RedHat then
+- name: "[rhel] install or update git"
+  yum:
+   name: git-all
+   state: latest
+  when: ansible_facts['os_family'] == 'RedHat'
+# If OS family is Debian then
+- name: "[deb] install or update git"
+  apt:
+   name: git
+   state: latest
+  when: ansible_facts['os_family'] == 'Debian'
