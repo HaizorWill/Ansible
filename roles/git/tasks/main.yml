@@ -7,6 +7,6 @@
 # If OS family is Debian then
 - name: "[deb] install or update git"
   apt:
-   name: git
+   name: git-all
    state: latest
   when: ansible_facts['os_family'] == 'Debian'
