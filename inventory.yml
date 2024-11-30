@@ -1,9 +1,0 @@
-webservers:
-  web1.home.lab:
-  web2.home.lab:
-dbservers:
-  db1.home.lab:
-  db2.home.lab:
-  db3.home.lab:
-loadbalancers:
-  lb1.home.lab:
