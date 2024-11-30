@@ -6,14 +6,6 @@
       prompt: "Do you want to setup passwordless ssh connections? (yes/no)"
       default: "no"
       private: "no"
-    # - name: keytype
-    #   prompt: "Which key type you want to use? (rsa, dsa, ecdsa, ed25519)"
-    #   default: rsa
-    #   private: no
-    # - name: ssh_key_filename
-    #   prompt: "What you want to name your ssh key file?"
-    #   default: "id_rsa"
-    #   private: no
   pre_tasks:
     - pause:
         prompt: "Which key type you want to use? (rsa, dsa, ecdsa, ed25519)"
@@ -32,7 +24,7 @@
   roles:
     - role: ssh_key
       when: ssh_setup == true
-
+################################################################
 - name: setup passwordless SSH
   hosts: all,!localhost
   vars:
@@ -45,7 +37,7 @@
         state: present
         key: "{{ lookup('file', '~/.ssh/{{ssh_key_filename}}.pub') }}"
       when: ssh_setup is defined and ssh_setup is true
-
+################################################################
 - name: setup new machine
   vars_prompt:
     - name: install_baseline

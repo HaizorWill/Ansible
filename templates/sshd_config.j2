@@ -1,8 +1,12 @@
 Include /etc/ssh/sshd_config.d/*.conf
 
 PermitRootLogin no
-AuthorizedKeysFile  .ssh/authorized_keys
+MaxAuthTries 3
+MaxSessions 5
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
 PasswordAuthentication no
+PermitEmptyPasswords no
 ChallengeResponseAuthentication no
 UsePAM no
 X11Forwarding yes
