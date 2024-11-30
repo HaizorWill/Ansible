@@ -1,0 +1,7 @@
+/OLD
+/.vscode
+/Ansible.code-workspace
+/inventory.yml
+/nginx.yml
+/update.yml
+/ssh-keygen.yml
