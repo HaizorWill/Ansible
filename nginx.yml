@@ -1,9 +1,0 @@
-- name: Nginx deployment
-  become:
-    true
-  become method:
-  - sudo
-  hosts: webservers
-  roles:
-    - nginx
-  remote_user: control
